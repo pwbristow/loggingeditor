@@ -1,0 +1,21 @@
+#!/bin/sh
+
+REV="HEAD"
+while getopts ":r:" opt; do
+	case $opt in 
+		r)
+			REV="$OPTARG"
+		;;
+		a)
+			ALL="$OPTARG"
+		;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+if [ ! -e $1 ]; then touch $1; fi
+FILE=`readlink -f $1`
+
+git show $REV:files$FILE > $FILE
+/git/meta$FILE

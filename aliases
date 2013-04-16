@@ -1,0 +1,2 @@
+alias nano="edit -e nano"
+alias vi="edit -e vi"

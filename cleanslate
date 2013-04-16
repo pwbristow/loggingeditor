@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [[ -e /etc/redhat-release ]]; then
+	yum install -y git coreutils >> /dev/null
+fi
+if [[ -e /etc/debian_version ]]; then
+	echo "someone write the install bits for debian"
+	apt-get install git-core
+	exit;
+fi
+
+rm -rf /git/meta/*
+rm -rf /git/files/*
+rm -rf /git/.git
+echo > /git/sudolog
+cd /git
+git init
+git add *
+HOST=`hostname`
+git commit -m 'cleanslate' --author="automaton <root@$HOST>"

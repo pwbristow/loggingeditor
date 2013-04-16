@@ -1,0 +1,56 @@
+#!/bin/sh
+
+commit () {
+	sh -c "cd /git; git add *; git commit --author='root <root@`hostname`>' $MSG" >> /dev/null
+}
+
+if [ ! -e /git/.git ]; then
+	echo "no initialized please run /git/cleanslate"
+	exit
+fi
+
+if [ $MSG ]; then
+	MSG="-m $MSG"
+else
+	MSG="-m 'msg'"
+fi
+
+while getopts ":m:e:" opt; do
+	case $opt in 
+		m)
+			MSG="-m $OPTARG"
+		;;
+		e)
+			EDITOR=$OPTARG
+		;;
+	esac
+done
+shift $((OPTIND-1))
+
+if [ ! $1 ]; then
+	echo "$0 [options] filename"
+	exit
+fi
+if [ ! -e $1 ]; then touch $1; fi
+
+FILE=`readlink -f $1`
+DIR=`dirname $FILE`
+
+if [ ! $EDITOR ]; then EDITOR=vi; fi
+EDITOR=`which $EDITOR`
+
+if [ ! $EDITOR ]; then
+	echo "$EDITOR not found"
+	exit
+fi
+
+mkdir -p  /git/files$DIR
+mkdir -p /git/meta$DIR
+cp $FILE /git/files$DIR
+stat --printf "#!/bin/sh\nchmod %a $FILE\nchown %U:%G $FILE\n" $FILE > /git/meta$FILE
+chmod 500 /git/meta$FILE
+
+commit
+$EDITOR $FILE
+cp $FILE /git/files$DIR
+commit
