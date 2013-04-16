@@ -30,3 +30,11 @@ You can add a ticket id to the git commit log with either the -m switch or by se
 ```bash
 edit -m 'PB-101' /etc/my.cnf
 ```
+
+### Installation ###
+```bash
+cd /
+git clone https://github.com/pwbristow/loggingeditor.git /git
+ln -s /git/editor /usr/local/bin/edit
+ln -s /git/restore /usr/local/bin/restore
+```
